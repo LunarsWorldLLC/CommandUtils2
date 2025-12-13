@@ -43,12 +43,9 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                     Player player = args.getByArgument(playerArg);
                                     Collection<ItemStack> drops = new ArrayList<>();
 
-                                    // Get all blocks and filter by protection in one optimized batch operation
-                                    Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player));
-
-                                    for (Block b : breakableBlocks) {
-                                        b.setType(Material.AIR);
-                                    }
+                                    for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player))
+                                        if (FUtils.isInClaimOrWilderness(player, b.getLocation()))
+                                            b.setType(Material.AIR);
 
                                     dropAllItemStacks(world, location, drops);
                                 })
@@ -65,11 +62,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                             Collection<ItemStack> drops = new ArrayList<>();
                                             List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
-                                            // Get all blocks and filter by protection in one optimized batch operation
-                                            Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player));
-
-                                            for (Block b : breakableBlocks) {
-                                                if (!testBlock(b, predicates)) continue;
+                                            for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
+                                                if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                                                 drops.addAll(b.getDrops(heldItem));
                                                 b.setType(Material.AIR);
                                             }
@@ -84,11 +78,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 ItemStack drop = args.getByArgument(dropArg);
                                                 List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
-                                                // Get all blocks and filter by protection in one optimized batch operation
-                                                Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player));
-
-                                                for (Block b : breakableBlocks) {
-                                                    if (!testBlock(b, predicates)) continue;
+                                                for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
+                                                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                                                     drop.setAmount(drop.getAmount() + 1);
                                                     b.setType(Material.AIR);
                                                 }
@@ -106,11 +97,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                                 Collection<ItemStack> drops = new ArrayList<>();
                                                 List<List<Predicate<Block>>> predicates = Utils.stringListToPredicate(args.getUnchecked("Whitelisted Blocks"));
 
-                                                // Get all blocks and filter by protection in one optimized batch operation
-                                                Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player));
-
-                                                for (Block b : breakableBlocks) {
-                                                    if (!testBlock(b, predicates)) continue;
+                                                for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
+                                                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                                                     drops.add(new ItemStack(b.getType()));
                                                     b.setType(Material.AIR);
                                                 }
@@ -130,11 +118,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                         Collection<ItemStack> drops = new ArrayList<>();
                                         List<List<Predicate<Block>>> predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
-                                        // Get all blocks and filter by protection in one optimized batch operation
-                                        Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player));
-
-                                        for (Block b : breakableBlocks) {
-                                            if (!testBlock(b, predicates)) continue;
+                                        for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
+                                            if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                                             drops.addAll(b.getDrops(heldItem));
                                             b.setType(Material.AIR);
                                         }
@@ -149,11 +134,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                             ItemStack drop = args.getByArgument(dropArg);
                                             List<List<Predicate<Block>>> predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
-                                            // Get all blocks and filter by protection in one optimized batch operation
-                                            Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player));
-
-                                            for (Block b : breakableBlocks) {
-                                                if (!testBlock(b, predicates)) continue;
+                                            for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
+                                                if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                                                 drop.setAmount(drop.getAmount() + 1);
                                                 b.setType(Material.AIR);
                                             }
@@ -171,11 +153,8 @@ public class BreakInFacingCommand extends Command implements Registerable {
                                             Collection<ItemStack> drops = new ArrayList<>();
                                             List<List<Predicate<Block>>> predicates = getPredicate(args.getByArgument(whitelistedBlocksArgument));
 
-                                            // Get all blocks and filter by protection in one optimized batch operation
-                                            Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player));
-
-                                            for (Block b : breakableBlocks) {
-                                                if (!testBlock(b, predicates)) continue;
+                                            for (Block b : Utils.getBlocksInFacing(world.getBlockAt(location), args.getByArgument(radiusArg), args.getByArgument(depthArg), player)) {
+                                                if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
                                                 drops.add(new ItemStack(b.getType()));
                                                 b.setType(Material.AIR);
                                             }

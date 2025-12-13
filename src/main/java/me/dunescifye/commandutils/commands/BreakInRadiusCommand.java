@@ -54,10 +54,9 @@ public class BreakInRadiusCommand extends Command implements Registerable {
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         Collection<ItemStack> drops = new ArrayList<>();
 
-        // Get all blocks and filter by protection in one optimized batch operation
-        Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInRadius(location.getBlock(), args.getByArgument(radiusArg)));
+        for (Block b : Utils.getBlocksInRadius(location.getBlock(), args.getByArgument(radiusArg))) {
+          if (!FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
-        for (Block b : breakableBlocks) {
           drops.addAll(b.getDrops(heldItem));
           b.setType(AIR);
         }
@@ -278,11 +277,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
     ItemStack heldItem = player.getInventory().getItemInMainHand();
     Collection<ItemStack> drops = new ArrayList<>();
 
-    // Get all blocks and filter by protection in one optimized batch operation
-    Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInRadius(location.getBlock(), radius));
-
-    for (Block b : breakableBlocks) {
-      if (!Utils.testBlock(b, predicates)) continue;
+    for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
+      if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
       drops.addAll(b.getDrops(heldItem));
       b.setType(AIR);
@@ -291,11 +287,9 @@ public class BreakInRadiusCommand extends Command implements Registerable {
     dropAllItemStacks(world, location, drops);
   }
   private void breakInRadius(List<List<Predicate<Block>>> predicates, World world, Location location, Player player, int radius, ItemStack drop) {
-    // Get all blocks and filter by protection in one optimized batch operation
-    Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInRadius(location.getBlock(), radius));
 
-    for (Block b : breakableBlocks) {
-      if (!Utils.testBlock(b, predicates)) continue;
+    for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
+      if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
       drop.setAmount(drop.getAmount() + 1);
       b.setType(AIR);
@@ -308,11 +302,8 @@ public class BreakInRadiusCommand extends Command implements Registerable {
   private void breakInRadiusForceDrop(List<List<Predicate<Block>>> predicates, World world, Location location, Player player, int radius) {
     Collection<ItemStack> drops = new ArrayList<>();
 
-    // Get all blocks and filter by protection in one optimized batch operation
-    Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(player, Utils.getBlocksInRadius(location.getBlock(), radius));
-
-    for (Block b : breakableBlocks) {
-      if (!Utils.testBlock(b, predicates)) continue;
+    for (Block b : Utils.getBlocksInRadius(location.getBlock(), radius)) {
+      if (!Utils.testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(player, b.getLocation())) continue;
 
       drops.add(new ItemStack(b.getType()));
       b.setType(AIR);
