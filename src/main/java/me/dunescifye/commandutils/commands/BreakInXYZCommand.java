@@ -13,9 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static me.dunescifye.commandutils.files.Config.getPredicate;
@@ -68,8 +66,11 @@ public class BreakInXYZCommand extends Command implements Registerable {
                 Collection<ItemStack> drops = new ArrayList<>();
                 ItemStack heldItem = p.getInventory().getItemInMainHand();
 
-                for (Block b : getBlocksInFacingXYZ(world.getBlockAt(loc), args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), p)) {
-                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(p, b.getLocation())) continue;
+                // Get all blocks and filter by protection in one optimized batch operation
+                Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(p, getBlocksInFacingXYZ(world.getBlockAt(loc), args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), p));
+
+                for (Block b : breakableBlocks) {
+                    if (!testBlock(b, predicates)) continue;
                     drops.addAll(b.getDrops(heldItem));
                     b.setType(Material.AIR);
                 }
@@ -101,8 +102,11 @@ public class BreakInXYZCommand extends Command implements Registerable {
                 Collection<ItemStack> drops = new ArrayList<>();
                 ItemStack heldItem = p.getInventory().getItemInMainHand();
 
-                for (Block b : getBlocksInFacingXYZ(world.getBlockAt(loc), args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), p)) {
-                    if (!testBlock(b, predicates) || !FUtils.isInClaimOrWilderness(p, b.getLocation())) continue;
+                // Get all blocks and filter by protection in one optimized batch operation
+                Set<Block> breakableBlocks = FUtils.filterBreakableBlocks(p, getBlocksInFacingXYZ(world.getBlockAt(loc), args.getByArgument(xArg), args.getByArgument(yArg), args.getByArgument(zArg), p));
+
+                for (Block b : breakableBlocks) {
+                    if (!testBlock(b, predicates)) continue;
                     drops.addAll(b.getDrops(heldItem));
                     b.setType(Material.AIR);
                 }

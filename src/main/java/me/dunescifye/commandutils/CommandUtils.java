@@ -31,6 +31,7 @@ public final class CommandUtils extends JavaPlugin {
     public static boolean libsDisguisesEnabled = false;
     public static boolean leafAPIEnabled = false;
     public static boolean worldGuardEnabled = false;
+    public static boolean fiveKProtectionEnabled = false;
     private static final HashMap<String, Command> commands = new HashMap<>();
 
     @Override
@@ -199,6 +200,12 @@ public final class CommandUtils extends JavaPlugin {
         if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
             logger.info("Detected WorldGuard, enabling support for it.");
             worldGuardEnabled = true;
+        }
+
+        // FiveK Protection plugin - update the plugin name if different
+        if (Bukkit.getPluginManager().isPluginEnabled("FiveKProtection")) {
+            logger.info("Detected FiveKProtection, enabling support for it.");
+            fiveKProtectionEnabled = true;
         }
 
         //Special Commands
