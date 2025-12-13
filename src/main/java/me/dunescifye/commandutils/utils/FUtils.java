@@ -3,13 +3,12 @@ package me.dunescifye.commandutils.utils;
 import com.massivecraft.factions.*;
 
 import me.dunescifye.commandutils.CommandUtils;
+import me.fivekfubi.api.BaseRaidersAPI;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.ClaimPermission;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -45,9 +44,9 @@ public class FUtils {
             return playerCanBuildDestroyBlock(player, location, "destroy", true);
         }
 
-        // Check FiveK Protection
-        if (CommandUtils.fiveKProtectionEnabled) {
-            return FiveKProtectionUtils.canBreakAt(player, location);
+        // Check BaseRaiders Protection
+        if (CommandUtils.baseRaidersEnabled) {
+            return BaseRaidersAPI.get().has_permission(player, location, "break");
         }
 
         return true;
@@ -83,9 +82,9 @@ public class FUtils {
             breakable.removeIf(block -> !playerCanBuildDestroyBlock(player, block.getLocation(), "destroy", true));
         }
 
-        // Filter by FiveK Protection (optimized batch operation)
-        if (CommandUtils.fiveKProtectionEnabled) {
-            breakable = FiveKProtectionUtils.filterBreakableBlocks(player, breakable);
+        // Filter by BaseRaiders Protection
+        if (CommandUtils.baseRaidersEnabled) {
+            breakable.removeIf(block -> !BaseRaidersAPI.get().has_permission(player, block.getLocation(), "break"));
         }
 
         return breakable;
